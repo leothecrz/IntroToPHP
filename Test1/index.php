@@ -8,11 +8,10 @@
 <body>
 
     <?php 
-
-    $email = $conf_email = $username = $password = "0";
     $nameElement = "NAME";
     if($_SERVER["REQUEST_METHOD"] == "POST")
     {
+        $email = $conf_email = $username = $password = "";
         $email = htmlspecialchars( $_POST["email"] ) ;
         $conf_email = htmlspecialchars( $_POST["emailCheck"] ) ;
         $username= htmlspecialchars( $_POST["userName"] ) ;
@@ -31,6 +30,10 @@
         }else
         {
             echo $conf_email;
+            if($conf_email === $email)
+            {
+                echo "<p class=\"success\"> Email Confirmed </p>";
+            }
         }
         if(empty($username))
         {
@@ -49,12 +52,9 @@
         } 
     }
 
-    
-
     ?>
 
     <h1><?php echo $nameElement?></h1>
- 
     <form action="" method="post">
 
         <label for="email"> Enter Email: </label>

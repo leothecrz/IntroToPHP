@@ -2,6 +2,8 @@ html
 {
     justify-content: center;
     text-align: center;
+    background-color: darkslategray;
+    color: white;
 }
 
 .error

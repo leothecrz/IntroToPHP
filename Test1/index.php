@@ -8,88 +8,72 @@
 <body>
 
     <?php 
-    $nameElement = "NAME";
-    if($_SERVER["REQUEST_METHOD"] == "POST")
-    {
-        $email = $conf_email = $username = $password = "";
-        $email = htmlspecialchars( $_POST["email"] ) ;
-        $conf_email = htmlspecialchars( $_POST["emailCheck"] ) ;
-        $username= htmlspecialchars( $_POST["userName"] ) ;
-        $password= htmlspecialchars( $_POST["passWord"] ) ;
+        $email = $conf_email = $username = $password = $textArea1 = $drp1 = $grp1 = $grp2 =  $cgrp1 = $cgrp2 = $cgrp3 = "";
+        $nameElement = "NAME";
+        $submited = false;
+        if($_SERVER["REQUEST_METHOD"] == "POST")
+        {
+        
+            $email = htmlspecialchars( $_POST["email"] ) ;
+            $conf_email = htmlspecialchars( $_POST["emailCheck"] ) ;
+            $username = htmlspecialchars( $_POST["userName"] ) ;
+            $password = htmlspecialchars( $_POST["passWord"] ) ;
 
-        if(empty($email))
-        {
-            echo "<p class=\"error\">email empty</p>";
-        }else
-        {
-            echo $email;
+            $textArea1 = htmlspecialchars( $_POST["textArea1"] );
+            $drp1 = htmlspecialchars( $_POST["drop1"] );
+            
+            if(!empty($_POST["grp1"]))
+                $grp1 = htmlspecialchars( $_POST["grp1"] );
+            if(!empty($_POST["grp2"]))
+                $grp2 = htmlspecialchars( $_POST["grp2"] );
+            if(!empty($_POST["cgrp1"]))
+                $cgrp1 = htmlspecialchars($_POST["cgrp1"]);
+            if(!empty($_POST["cgrp2"]))
+                $cgrp2 = htmlspecialchars($_POST["cgrp2"]);
+            if(!empty($_POST["cgrp3"]))
+                $cgrp3 = htmlspecialchars($_POST["cgrp3"]);
+            
+            $submited = true;
         }
-        if(empty($conf_email))
-        {
-            echo "<p class=\"error\">email confirm empty</p>";
-        }else
-        {
-            echo $conf_email;
-            if($conf_email === $email)
-            {
-                echo "<p class=\"success\"> Email Confirmed </p>";
-            }
-        }
-        if(empty($username))
-        {
-            echo "<p class=\"error\">username empty</p>";
-        }else
-        {
-            echo $username;
-            $nameElement = $username;
-        }
-        if(empty($password))
-        {
-            echo "<p class=\"error\">password empty</p>";
-        }  else
-        {
-            echo $password;
-        } 
-    }
 
     ?>
 
-    <h1><?php echo $nameElement?></h1>
+    <h1> <?php echo $nameElement?> </h1>
     <form action="" method="post">
 
         <label for="email"> Enter Email: </label>
-        <input name="email" id="email" type="text"><br/><br/>
+        <input name="email" id="email" type="text" value="<?php echo $email?>"><br/><br/>
 
         <label for="emailCheck"> Confirm Email: </label>
-        <input name="emailCheck" id="emailCheck" type="text"><br/><br/>
+        <input name="emailCheck" id="emailCheck" type="text" value="<?php echo $conf_email?>" ><br/><br/>
         
         <label for="userName"> Enter Username: </label>
-        <input name="userName" id="userName" type="text"><br/><br/>
+        <input name="userName" id="userName" type="text" value="<?php echo $username?>" ><br/><br/>
 
         <label for="passWord"> Password: </label>
-        <input name="passWord" id="passWord" type="password"><br/><br/>
+        <input name="passWord" id="passWord" type="password" value="<?php echo $password?>" ><br/><br/>
 
         <p> Select One </p>
         <!-- Radio Group 1  -->
-        <input id="rgrp1-1" name="grp1" type="radio">
+        <input id="rgrp1-1" name="grp1" type="radio" value="OP1" <?php echo (($submited && $grp1 === "OP1") ? ("checked") : (""))  ?>  >
         <label for="rgrp1-1"> OP1 </label></br>
 
-        <input id="rgrp1-2" name="grp1" type="radio">
+        <input id="rgrp1-2" name="grp1" type="radio" value="OP2" <?php echo (($submited && $grp1 === "OP2") ? ("checked") : (""))  ?>>
         <label for="rgrp1-2"> OP2 </label></br>
 
-        <input id="rgrp1-3" name="grp1" type="radio">
+        <input id="rgrp1-3" name="grp1" type="radio" value="OP3" <?php echo (($submited && $grp1 === "OP3") ? ("checked") : (""))  ?>>
         <label for="rgrp1-3"> OP3 </label></br>
         <br/>
 
         <p> Select One </p>
         <!-- Radio Group 2  -->
-        <input id="rgrp2-1" name="grp2" type="radio">
+        <input id="rgrp2-1" name="grp2" type="radio" value="OP1" <?php echo (($submited && $grp2 === "OP1") ? ("checked") : (""))  ?>>
         <label for="rgrp2-1"> OP1 </label></br>
 
-        <input id="rgrp2-2" name="grp2" type="radio">
+        <input id="rgrp2-2" name="grp2" type="radio" value="OP2" <?php echo (($submited && $grp2 === "OP1") ? ("checked") : (""))  ?>>
         <label for="rgrp2-2"> OP2 </label></br>
 
-        <input id="rgrp2-3" name="grp2" type="radio">
+        <input id="rgrp2-3" name="grp2" type="radio" value="OP3" <?php echo (($submited && $grp2 === "OP1") ? ("checked") : (""))  ?>>
         <label for="rgrp2-3"> OP3 </label></br>
         <br/>
 
@@ -119,7 +103,7 @@
         <br/>
         <!-- Text Area -->
         <label for="textArea1" >  </label>
-        <textarea id="textArea1" >Text Area ...</textarea><br/>
+        <textarea name="textArea1" id="textArea1" value="" ><?php echo ((empty($textArea1)) ? "Text Area ..." : $textArea1) ?></textarea><br/>
 
         <br/>
         <!-- Buttons -->
@@ -129,7 +113,7 @@
 
         <input type="submit"><br/><br/>
 
-</form>
+    </form>
 </body>
 
 <script src="js/main.js" ></script>

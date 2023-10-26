@@ -23,54 +23,50 @@ function checkSimilarity()
     }
 }
 
+function checkRadioGroup(groupName, displayName)
+{
+    let radioSuccess = false;
+    const rdgrp = document.querySelectorAll(`input[name="${groupName}"]`)
+    for( btn of rdgrp)
+    {
+        if( btn.checked )
+            radioSuccess = true;
+    }
+    if(!radioSuccess)
+    {
+        alert( `No option was selected in ${displayName}` );
+        return false;
+    }
+    return true;
+}
+
 function validate()
 {
     const inputIDS = ["email", "emailCheck", "userName", "passWord"];
     for(id of inputIDS)
         if( document.getElementById(id).value.length < 1 )
         {
-            alert( ` The  ${id} element is empty` );
-            return false;
+            alert( ` The ${id} text field is empty` );
+            return; // Early End
         }
 
-    let radioSuccess = false;
-    const rdgrp1 = document.querySelectorAll('input[name="grp1"]')
-    for( btn of rdgrp1)
-    {
-        if( btn.checked )
-            radioSuccess = true;
-    }
-    if(!radioSuccess)
-    {
-        alert( "No option was selected in radio group 1" );
-        return false;
-    }
-    radioSuccess = false;
-    const rdgrp2 = document.querySelectorAll('input[name="grp2"]')
-    for( btn of rdgrp2)
-    {
-        if( btn.checked )
-            radioSuccess = true;
-    }
-    if(!radioSuccess)
-    {
-        alert( "No option was selected in radio group 2" );
-        return false;
-    }
-    radioSuccess = false;
+    if( !checkRadioGroup("grp1", "Radio Group 1") )
+        return // Early End
 
+    if( !checkRadioGroup("grp2", "Radio Group 2") )
+        return; //Early End
+
+    let oneCheck = false;
     const checkBoxIDS = ["cgrp1", "cgrp2", "cgrp3"];
     for(id of checkBoxIDS)
         if( document.getElementById(id).checked )
         {
-            radioSuccess = true;
+            oneCheck = true;
         }
-    if(!radioSuccess)
+    if(!oneCheck)
     {
         alert( "At least one box has to be checked" );
-        return false;
+        return;
     }
-
     alert( " ALL REQUIRED FIELDS ARE FILLED " )
-
 }

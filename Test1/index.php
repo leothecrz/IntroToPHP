@@ -1,133 +1,251 @@
-<html>
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <title> Intro To PHP Form Validating </title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Intro To PHP Form Validation</title>
     <link rel="stylesheet" href="css/styles.css">
 </head>
-
 <body>
-
     <?php 
-
-        function addCheckedIf($bool)
+        function createRadioGroup($nameID, &$values, $checkedValue)
         {
-            return ($bool) ? "checked" : "";
-        }
-
-        $email = $conf_email = $username = $password = $textArea1 = $drp1 = $grp1 = $grp2 =  $cgrp1 = $cgrp2 = $cgrp3 = "";
-        $nameElement = "NAME";
-        $submited = false;
-        if($_SERVER["REQUEST_METHOD"] == "POST")
-        {
-            $submited = true;
-
-            $email = htmlspecialchars( $_POST["email"] ) ;
-            $conf_email = htmlspecialchars( $_POST["emailCheck"] ) ;
-            $username = htmlspecialchars( $_POST["userName"] ) ;
-            $password = htmlspecialchars( $_POST["passWord"] ) ;
-
-            $textArea1 = htmlspecialchars( $_POST["textArea1"] );
-            $drp1 = htmlspecialchars( $_POST["drop1"] );
-            
-            if(!empty($_POST["grp1"]))
-                $grp1 = htmlspecialchars( $_POST["grp1"] );
-            if(!empty($_POST["grp2"]))
-                $grp2 = htmlspecialchars( $_POST["grp2"] );
-            if(!empty($_POST["cgrp1"]))
-                $cgrp1 = htmlspecialchars($_POST["cgrp1"]);
-            if(!empty($_POST["cgrp2"]))
-                $cgrp2 = htmlspecialchars($_POST["cgrp2"]);
-            if(!empty($_POST["cgrp3"]))
-                $cgrp3 = htmlspecialchars($_POST["cgrp3"]);
-            
-            if($email !== $conf_email)
+            $start = 0;
+            $count = count($values);
+            foreach ($values as $val)
             {
-                $submited = false;
-                echo "<p class =\"error\"> Email was not confirmed</p>";
+                $checked = ( ($checkedValue === $val) ? "checked" : "" );
+                echo "<input type='radio' name='{$nameID}' id='{$nameID}-{$start}' value='{$val}' {$checked}>";
+                echo "<label for='{$nameID}-{$start}'> {$val} </label></br>";
+                $start++;
             }
-
-            
-            echo $drp1;
         }
-
+        function cleanInput($input)
+        {
+            $in = trim($input);
+            $in = stripslashes($in);
+            $in = htmlspecialchars($in);
+            return $in;
+        }
+    ?>
+    <?php 
+        $email = $emailConf = $user = $pass = 
+        $rGrp1 = $rGrp2 = 
+        $checkboxes = 
+        $dropBox = 
+        $userText = "";
+        $submitted = false;
+        $success = true;
+        $nameElem = "NAME";
+        if($_SERVER["REQUEST_METHOD"] == "POST")
+        { // Form Sumbmition Gather
+            if( !empty($_POST["email"]) )
+            {
+                $email = cleanInput( $_POST["email"] );
+            }
+            if( !empty($_POST["emailCheck"]) )
+            {
+                $emailConf = cleanInput( $_POST["emailCheck"] );
+            }
+            if( !empty($_POST["username"]) )
+            {
+                $user = cleanInput( $_POST["username"] );
+            }
+            if( !empty($_POST["pass"]) )
+            {
+                $pass = cleanInput( $_POST["pass"] );
+            }
+            if( !empty($_POST["group1"]) )
+            {
+                $rGrp1 = cleanInput( $_POST["group1"] );
+            }
+            if( !empty($_POST["group2"]) )
+            {
+                $rGrp2 = cleanInput( $_POST["group2"] );
+            }
+            if( !empty($_POST["drp1"]) )
+            {
+                $dropBox = cleanInput( $_POST["drp1"] );
+            }
+            if( !empty($_POST["textArea1"]) )
+            {
+                $userText = cleanInput( $_POST["textArea1"] );
+            }
+            if( !empty($_POST["cgrp"]) )
+            {
+                $checkboxes = $_POST["cgrp"];
+            }
+            $submitted = true;
+            if( !empty($emailConf) && !empty($email) && !empty($user) )
+                if( $emailConf === $email)
+                    $nameElem = $user;
+            else
+                $success = false;
+        }
     ?>
 
-    <h1> <?php echo $nameElement?> </h1>
+    <h1> <?php echo $nameElem ?> </h1>
     <form action="" method="post">
-
-        <label for="email"> Enter Email: </label>
-        <input name="email" id="email" type="text" value="<?php echo $email?>"><br/><br/>
-
-        <label for="emailCheck"> Confirm Email: </label>
-        <input name="emailCheck" id="emailCheck" type="text" value="<?php echo $conf_email?>" ><br/><br/>
+    
+        <!-- Text Fields -->
+        <label for="email"> Enter Email </label>
+        <input name="email" id="email" type="text" value="<?php echo $email ?>" >
         
-        <label for="userName"> Enter Username: </label>
-        <input name="userName" id="userName" type="text" value="<?php echo $username?>" ><br/><br/>
+        <?php if($submitted && empty($email)){
+            echo "<span class='error'> Value Required </span>";
+            $success = false;
+        }?>
+        <br/><br/>
 
-        <label for="passWord"> Password: </label>
-        <input name="passWord" id="passWord" type="password" value="<?php echo $password?>" ><br/><br/>
+        <label for='emailCheck'> Confirm Email: </label>
+        <input name="emailCheck" id="emailCheck" type="text" value="<?php echo $emailConf ?>" >
+        
+        <?php if($submitted && empty($emailConf)){
+            echo "<span class='error'> Value Required </span>";
+            $success = false;
+        }?>
+        <br/><br/>
+         
+        <label for="username"> Username: </label>
+        <input name="username" id="username" type="text" value="<?php echo $user ?>" >
+        
+        <?php if($submitted && empty($user)){
+            echo "<span class='error'> Value Required </span>";
+            $success = false;
+        }?>
+        <br/><br/>
 
-        <p> Select One </p>
-        <!-- Radio Group 1  -->
-        <input id="rgrp1-1" name="grp1" type="radio" value="OP1" <?php echo (addCheckedIf($grp1 === "OP1"))  ?>>
-        <label for="rgrp1-1"> OP1 </label></br>
+        <label for="pass"> Password: </label>
+        <input name="pass" id="pass" type="password" value="<?php echo $pass ?>" >
+        
+        <?php if($submitted && empty($pass)){
+            echo "<span class='error'> Value Required </span>";
+            $success = false;
+        }?>
 
-        <input id="rgrp1-2" name="grp1" type="radio" value="OP2" <?php echo (addCheckedIf($grp1 === "OP2"))  ?>>
-        <label for="rgrp1-2"> OP2 </label></br>
+        <!-- RadioGroups -->
+        <h3>Radio 1</h3>
+        <?php 
+            $groupOPS = array("OP1", "OP2", "OP3", "OP4");
+            $selected = null;
+            if($submitted)
+            {
+                if(empty($rGrp1))
+                {
+                    echo "<span class='error'> Select ONE  </span></br>";
+                    $success = false;
+                }
+                else
+                    $selected = $rGrp1;
+            }
+            createRadioGroup("group1", $groupOPS, $selected);
+        ?>
+        <h3>Radio 2</h3>
+        <?php 
+            if($submitted)
+            {
+                if(empty($rGrp2))
+                {
+                    echo "<span class='error'> Select ONE  </span></br>";
+                    $success = false;
+                }
+                else
+                    $selected = $rGrp2;
+            }
+            createRadioGroup("group2", $groupOPS, $selected);
+        ?>
 
-        <input id="rgrp1-3" name="grp1" type="radio" value="OP3" <?php echo (addCheckedIf($grp1 === "OP3"))  ?>>
-        <label for="rgrp1-3"> OP3 </label></br>
-        <br/>
-
-        <p> Select One </p>
-        <!-- Radio Group 2  -->
-        <input id="rgrp2-1" name="grp2" type="radio" value="OP1" <?php echo (addCheckedIf($grp2 === "OP1"))  ?>>
-        <label for="rgrp2-1"> OP1 </label></br>
-
-        <input id="rgrp2-2" name="grp2" type="radio" value="OP2" <?php echo (addCheckedIf($grp2 === "OP1"))  ?>>
-        <label for="rgrp2-2"> OP2 </label></br>
-
-        <input id="rgrp2-3" name="grp2" type="radio" value="OP3" <?php echo (addCheckedIf($grp2 === "OP1"))  ?>>
-        <label for="rgrp2-3"> OP3 </label></br>
-        <br/>
-
-        <p> Select AT Least One </p>
         <!-- CheckBoxes -->
-        <input name="cgrp1" id="cgrp1" type="checkbox" <?php echo (addCheckedIf( !empty($cgrp1)))  ?> >
+        <p> Select AT Least One </p>
+        <?php 
+            $checkCheckboxes = false;
+            if($submitted) 
+            {
+                if( empty($checkboxes)) 
+                {
+                    echo "<span class='error'> Select at Least ONE  </span></br>";
+                    $success = false;
+                }
+                else
+                    $checkCheckboxes = true;
+            }        
+        ?>
+        <?php
+            $checkedHTML = "";
+            if($checkCheckboxes && array_search("OP 1", $checkboxes) !== false  )
+                $checkedHTML = "checked"; 
+        ?>
+        <input type="checkbox" name="cgrp[]" id="cgrp1" value="OP 1" <?php echo $checkedHTML ?> >
         <label for="cgrp1"> OP1 </label>
 
-        <input name="cgrp2" id="cgrp2" type="checkbox" <?php echo (addCheckedIf( !empty($cgrp2)))  ?>>
+        <?php
+            $checkedHTML = "";
+            if($checkCheckboxes && array_search("OP 2", $checkboxes) !== false )
+                $checkedHTML = "checked";
+        ?>
+        <input type="checkbox" name="cgrp[]" id="cgrp2" value="OP 2" <?php echo $checkedHTML ?> > 
         <label for="cgrp2"> OP2 </label>
 
-        <input name="cgrp3" id="cgrp3" type="checkbox" <?php echo (addCheckedIf( !empty($cgrp3)))  ?>>
+        <?php
+            $checkedHTML = "";
+            if($checkCheckboxes && array_search("OP 3", $checkboxes) !== false )
+                $checkedHTML = "checked";
+        ?>
+        <input type="checkbox" name="cgrp[]" id="cgrp3" value="OP 3" <?php echo $checkedHTML ?> >  
         <label for="cgrp3"> OP3 </label>
-        <br/>
-        <br/>
+        <br/><br/>
 
         <!-- Dropbox -->
         <label for="drp1"> DROPBOX 1</label><br/>
-        <select name="drop1" id="drp1">
-            <option <?php echo ( ($submited && ($drp1 ==="NO OP")) ? "selected" : "" )  ?> > NO OP </option>
-            <option <?php echo ( ($submited && ($drp1 ==="OP 1")) ? "selected" : "" )  ?> > OP 1  </option>
-            <option <?php echo ( ($submited && ($drp1 ==="OP 2")) ? "selected" : "" )  ?> > OP 2  </option>
-            <option <?php echo ( ($submited && ($drp1 ==="OP 3")) ? "selected" : "" )  ?> > OP 3  </option>
-            <option <?php echo ( ($submited && ($drp1 ==="OP 4")) ? "selected" : "" )  ?> > OP 4  </option>
-        </select><br/>
+        <select name="drp1" id="drp1">
+            <?php 
+                $drpVals = array("NO OP", "OP 1", "OP 2", "OP 3", "OP 4");
+                foreach ($drpVals as $val)
+                {   
+                    $sel = "";
+                    if($submitted && $dropBox === $val)
+                        $sel = "selected";
+                    
+                    echo "<option {$sel}> {$val} </option>";
+                }
+            ?>
+        </select><br/><br/>
 
-        <br/>
         <!-- Text Area -->
-        <label for="textArea1" >  </label>
-        <textarea name="textArea1" id="textArea1" value="" ><?php echo (($submited&&empty($textArea1)) ? "Text Area ..." : $textArea1) ?></textarea><br/>
+        <label for="textArea1" > Text Area: </label><br/>
+        <textarea name="textArea1" id="textArea1" >Text Area ...</textarea><br/><br/>
 
-        <br/>
         <!-- Buttons -->
         <input onclick="checkSimilarity()" id="SimCheck" type="button" value="SimCheck"> <br/><br/>
-
         <button type="button" onclick="validate()" > Validate </button><br/><br/>
-
         <input type="submit"><br/><br/>
 
+        <?php 
+        if($submitted)
+            if($success)
+            {
+                echo "<span class='success'> -- Form Success -- </span></br>";
+                echo "Email: " . $email . "</br>";
+                echo "Email Conf: " . $emailConf . "</br>"; 
+                echo "Username: " . $user . "</br>";
+                echo "Password: " . $pass . "</br>";
+                echo "Radio Group 1: " . $rGrp1 . "</br>";
+                echo "Radio Group 2: " . $rGrp2 . "</br>";
+                echo "CheckBoxes: "; 
+                var_dump($checkboxes);
+                echo "</br>";
+                echo "Dropbox: " . $dropBox . "</br>";
+                echo "TEXT: </br>" . $userText . "</br>";
+            }
+            else
+            {
+                echo "<span class='error'> -- Form Failure -- </span>";
+            }
+        ?>
+
+
     </form>
+
 </body>
 
 <script src="js/main.js" ></script>

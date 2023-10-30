@@ -42,7 +42,7 @@ function checkRadioGroup(groupName, displayName)
 
 function validate()
 {
-    const inputIDS = ["email", "emailCheck", "userName", "passWord"];
+    const inputIDS = ["email", "emailCheck", "username", "pass"];
     for(id of inputIDS)
         if( document.getElementById(id).value.length < 1 )
         {
@@ -50,10 +50,10 @@ function validate()
             return; // Early End
         }
 
-    if( !checkRadioGroup("grp1", "Radio Group 1") )
+    if( !checkRadioGroup("group1", "Radio Group 1") )
         return // Early End
 
-    if( !checkRadioGroup("grp2", "Radio Group 2") )
+    if( !checkRadioGroup("group2", "Radio Group 2") )
         return; //Early End
 
     let oneCheck = false;
